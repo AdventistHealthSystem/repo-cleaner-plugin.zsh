@@ -2,6 +2,7 @@
 
 # Default function
 repo-cleaner() {
+    echo "Finding repositories. This might take a minute ..."
     repo-cleaner-iterate $(find $HOME -name .git -type d)
 }
 
