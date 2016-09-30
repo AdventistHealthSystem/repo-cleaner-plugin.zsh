@@ -37,10 +37,12 @@ repo-cleaner-update() {
 repo-cleaner-handle-remotes() {
     branch="$(git name-rev --name-only HEAD)"
     remotes=$(git remote)
+
+    # Big assumption here, but I'm going with it for now
+    git pull origin $branch
     for remote in $remotes
     do
         git fetch $remote
-        git pull $remote $branch
         git remote prune $remote
     done
 
