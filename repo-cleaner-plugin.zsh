@@ -16,7 +16,7 @@ repo-cleaner-iterate() {
         cd "$folder/../"
         branch="$(git name-rev --name-only HEAD)"
         echo -e "${reset}====================================================================="
-        echo "$folder [$branch]"
+        echo "$(pwd) [$branch]"
         repo-cleaner-update
     done
 }
