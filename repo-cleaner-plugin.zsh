@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+REPOS="$(find $HOME -name .git -type d)"
 
 # Iterates through given folders
 repo-cleaner-iterate() {
@@ -27,4 +27,4 @@ repo-cleaner-update() {
     git fsck --full
 }
 
-repo-cleaner-iterate $(find $HOME -name .git -type d)
+export $REPOS
