@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
+# Default function
 repo-cleaner() {
     repo-cleaner-iterate $(find $HOME -name .git -type d)
 }
