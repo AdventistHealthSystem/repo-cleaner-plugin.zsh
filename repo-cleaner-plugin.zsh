@@ -2,8 +2,10 @@
 
 # Default function
 repo-cleaner() {
+    starting=$(pwd) #store the current directory, so we can come back to it
     echo "Finding repositories. This might take a minute ..."
     repo-cleaner-iterate $(find $HOME -name .git -type d)
+    cd $starting # go back to the starting point
 }
 
 # Iterates through given folders
