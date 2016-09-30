@@ -7,25 +7,38 @@ repo-cleaner() {
 
 # Iterates through given folders
 repo-cleaner-iterate() {
-    RESET="\033[0m"
-    for DIR in "$@";
+    reset="\033[0m"
+    for folder in "$@";
     do
-        cd "$DIR/../"
-        BRANCH="$(git name-rev --name-only HEAD)"
-        echo -e "${RESET}====================================================================="
-        echo "$DIR [$BRANCH]"
+        cd "$folder/../"
+        branch="$(git name-rev --name-only HEAD)"
+        echo -e "${reset}====================================================================="
+        echo "$folder [$branch]"
         repo-cleaner-update
     done
 }
 
 # Updates all of the git stuff in a folder
 repo-cleaner-update() {
-    RED="\033[01;31m"
-
-    git fetch origin
-    git pull origin $BRANCH
-    echo -e "\n${RED}git remote prune origin"
+    red="\033[01;31m"
+    green="\033[0;32m"
+    echo -e "$red"
+    repo-cleaner-handle-remotes
+    echo -e "$green"
     git prune
     git gc --aggressive
     git fsck --full
+}
+
+# Perform the fetching, pruning, and pulling of remotes
+repo-cleaner-handle-remotes() {
+    branch="$(git name-rev --name-only HEAD)"
+    remotes=$(git remote)
+    for remote in $remotes
+    do
+        git fetch $remote
+        git pull $remote $branch
+        git remote prune $remote
+    done
+
 }
