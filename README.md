@@ -15,3 +15,6 @@ The plugin will find all of the git repos inside a user's home folder, and itera
 ```
 antigen bundle corycollier/repo-cleaner-plugin.zsh
 ```
+
+## Usage
+The script can be run as simply as `repo-cleaner`. This will, by default, search through the contents of the `$HOME` directory for any git repos to clean up. If you specify a `$REPOSITORY_DIR` variable, the script will only search that directory for updates (maxdepth 1)

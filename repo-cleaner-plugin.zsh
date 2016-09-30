@@ -1,19 +1,28 @@
 #!/usr/bin/env zsh
-
 # Default function
 repo-cleaner() {
     starting=$(pwd) #store the current directory, so we can come back to it
-    echo "Finding repositories. This might take a minute ..."
-    repo-cleaner-iterate $(find $HOME -name .git -type d)
+    if [ -n "$REPOSITORY_DIR" ];
+    then
+        echo "REPOSITORY_DIR value is set";
+        repo-cleaner-iterate $(find  $REPOSITORY_DIR -maxdepth 1 -type d)
+    else
+        echo "REPOSITORY_DIR value is NOT set";
+        echo "Finding repositories. This might take  a minute ..."
+        repo-cleaner-iterate $(find $HOME -name .git -type d)
+    fi
     cd $starting # go back to the starting point
 }
 
+
 # Iterates through given folders
 repo-cleaner-iterate() {
+    echo "iterating"
     reset="\033[0m"
     for folder in "$@";
     do
-        cd "$folder/../"
+        folder=$(echo $folder | sed 's/\.git\///g')
+        cd $folder
         branch="$(git name-rev --name-only HEAD)"
         echo -e "${reset}====================================================================="
         echo "$(pwd) [$branch]"
@@ -21,16 +30,36 @@ repo-cleaner-iterate() {
     done
 }
 
+repo-cleaner-is-repo() {
+    echo "checking"
+    result="$(git status)"
+
+    echo $result;
+
+    if [[ -n $result ]];
+    then
+        echo "is a repo";
+        return 0;
+    else
+        echo "is NOT a repo";
+        return 1;
+    fi
+}
+
 # Updates all of the git stuff in a folder
 repo-cleaner-update() {
-    red="\033[01;31m"
-    green="\033[0;32m"
-    echo -e "$red"
-    repo-cleaner-handle-remotes
-    echo -e "$green"
-    git prune
-    git gc --aggressive
-    git fsck --full
+    echo "updating"
+    if repo-cleaner-is-repo $(pwd);
+    then
+        red="\033[01;31m"
+        green="\033[0;32m"
+        echo -e "$red"
+        repo-cleaner-handle-remotes
+        echo -e "$green"
+        git prune
+        git gc --aggressive
+        git fsck --full
+    fi
 }
 
 # Perform the fetching, pruning, and pulling of remotes
